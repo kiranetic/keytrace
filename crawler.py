@@ -4,7 +4,7 @@ from crawl4ai.content_filter_strategy import PruningContentFilter
 from crawl4ai.markdown_generation_strategy import DefaultMarkdownGenerator
 
 
-async def crawl_scrap(url):
+async def crawler(url):
 
     md_generator = DefaultMarkdownGenerator(
         content_filter=PruningContentFilter(threshold=0.5),
@@ -19,15 +19,9 @@ async def crawl_scrap(url):
         result = await crawler.arun(url=url, config=config)
 
         if result.success:
-            print("Filtered markdown:\n", result.markdown.fit_markdown)
+            print(f"Filtered markdown:\n{result.markdown.fit_markdown}")
             return result.markdown.fit_markdown
         else:
-            print("Crawl failed:", result.error_message)
+            print(f"Crawl failed:\n{result.error_message}")
             return None
 
-
-def crawl_init(url):
-    result = asyncio.run(crawl_scrap(url))
-    return result
-
-crawl_init("https://www.asdgdiceds.uk/sen-prisoner-money")
