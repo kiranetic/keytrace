@@ -2,8 +2,7 @@ import asyncio
 from crawler import crawler
 from utils import prompt_builder
 from agents import extraction_agent
-from autogen_agentchat.messages import TextMessage
-from autogen_core import CancellationToken
+from runner import run_agent
 
 
 async def main():
@@ -20,16 +19,9 @@ async def main():
     prompt = prompt_builder(content, keyword)
     print("🧠 Prompt ready. Sending to agent...")
 
-    agent = extraction_agent()
-    message = TextMessage(content=prompt, source="user")
+    extracted_text = await run_agent(prompt)
 
-    response = await agent.on_messages(
-        [message],
-        cancellation_token=CancellationToken(),
-    )
-    print("\nresponse.chat_message.content", response.chat_message.content)
-    print("\nresponse.inner_messages", response.inner_messages)
-    print("\nresponse.chat_message", response.chat_message)
+    print("Extracted text:", extracted_text)
 
 
 if __name__=="__main__":
