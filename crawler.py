@@ -19,7 +19,7 @@ async def crawler(url):
         result = await crawler.arun(url=url, config=config)
 
         if result.success:
-            print(f"Filtered markdown:\n{result.markdown.fit_markdown}")
+            # print(f"Filtered markdown:\n{result.markdown.fit_markdown}")
             return result.markdown.fit_markdown
         else:
             print(f"Crawl failed:\n{result.error_message}")
