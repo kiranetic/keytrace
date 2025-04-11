@@ -1,10 +1,11 @@
 import asyncio
 from crawl4ai import AsyncWebCrawler
 
-async def main():
+async def crawl_scrap(url):
     async with AsyncWebCrawler() as crawler:
-        result = await crawler.arun(url="https://docs.crawl4ai.com/")
+        result = await crawler.arun(url=url)
+        return result.markdown
 
-        print(result.markdown)
-
-asyncio.run(main())
+def crawl_init(url):
+    result = asyncio.run(crawl_scrap(url))
+    return result
