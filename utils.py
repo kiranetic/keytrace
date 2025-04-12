@@ -62,6 +62,6 @@ def save_to_csv(data_list, file):
         writer = csv.DictWriter(f, fieldnames=headers)
         writer.writeheader()
         writer.writerows(data_list)
-        print(f"Table stored as CSV. Filename: {file}.")
+        print(f"\n\nTable stored as CSV. Filename: {file}.")
     
     return
