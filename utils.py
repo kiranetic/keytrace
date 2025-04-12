@@ -65,3 +65,4 @@ def save_to_csv(data_list, file):
         print(f"\n\nTable stored as CSV. Filename: {file}.")
     
     return
+
