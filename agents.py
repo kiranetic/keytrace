@@ -14,13 +14,17 @@ def extraction_agent() -> AssistantAgent:
     )
 
     system_prompt = (
-'''
-You are a helpful assistant.
-From the provided web content, extract a sentence that is either directly about the given keyword or closely related/relevent to it. 
-Don't rephrase or mention things not discussed in the content.
-Strictly base your response on the content.
-If no relevant content is found, say None.
-'''
+"""
+You are a smart content extraction assistant.
+
+Given a prompt that includes:
+1. A list of keywords
+2. A web page's content
+
+You must return a structured response that maps each keyword to all matching sentences from the content.
+Do not rephrase or mention things not discussed in the content. Only return sentences that **explicitly appear** in the content.
+Always respond with a list of JSON objects, each containing the keyword and the list of matched sentences.
+"""
     )
 
     agent = AssistantAgent(

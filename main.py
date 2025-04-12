@@ -1,14 +1,14 @@
 import asyncio
 import time
+import json
 import pandas as pd
 from pathlib import Path
-from tabulate import tabulate
 
 import patch
 from crawler import crawler
-from utils import prompt_builder
 from agents import extraction_agent
 from runner import run_agent
+from utils import prompt_builder, extract_json_block
 
 
 URL_FILE = "input/urls.txt"
@@ -27,7 +27,7 @@ def load_input():
     return url_list, keyword_list
 
 
-async def keytrace_processing(url, keyword):
+async def keytrace_processing(url, keyword_list):
     # print(f"🕸️ Crawling: {url}")
     content = await crawler(url)
 
@@ -35,45 +35,49 @@ async def keytrace_processing(url, keyword):
     #     print("❌ No content extracted from the page.")
     #     return
 
-    prompt = prompt_builder(content, keyword)
+    prompt = prompt_builder(content, keyword_list)
     # print("🧠 Prompt ready. Sending to agent...")
 
-    extracted_text = await run_agent(prompt)
+    agent_response = await run_agent(prompt)
+    # print("Agent response:", agent_response)
 
-    # print("Extracted text:", extracted_text)
+    json_str = extract_json_block(agent_response)
+    # print("Formatted JSON:", json_str)
 
-    result = {
-        "url": url,
-        "keyword": keyword,
-        "content": extracted_text
-    }
+    try:
+        result_json = json.loads(json_str)
+    except Exception as e:
+        print("❌ Exception:", e)
+        return []
 
-    # print(result)
+    result = []
+    for item in result_json:
+        keyword = item.get("keyword", "").strip()
+        matches = item.get("matches", [])
+
+        for match in matches:
+            cleaned_match = match.strip()
+            if cleaned_match and cleaned_match.lower() != "none":
+                json_item = {
+                    "url": url,
+                    "keyword": keyword,
+                    "content": cleaned_match
+                }
+            result.append(json_item)
 
     return result
     
-
 
 async def main():
     url_list, keyword_list = load_input()
     result_list = []
 
     for url in url_list:
-        for keyword in keyword_list:
-            result = await keytrace_processing(url, keyword)
-            result_list.append(result)
-            await asyncio.sleep(2)
+        result = await keytrace_processing(url, keyword_list)
+        result_list.extend(result)
+        await asyncio.sleep(2)
 
-    print(result_list)
-
-    df = pd.DataFrame(result_list)
-
-    df.to_csv(OUTPUT_FILE, index=False)
-
-    table = tabulate(df, headers="keys", tablefmt="grid", showindex=False)
-    print(table)
-
-
+    print("Result:", result_list)
 
     return
 
