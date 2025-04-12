@@ -1,14 +1,11 @@
 import asyncio
-import time
 import json
-import pandas as pd
-from pathlib import Path
 
 import patch
 from crawler import crawler
 from agents import extraction_agent
 from runner import run_agent
-from utils import prompt_builder, extract_json_block
+from utils import prompt_builder, extract_json_block, display_result, save_to_csv
 
 
 URL_FILE = "input/urls.txt"
@@ -17,12 +14,19 @@ OUTPUT_FILE = "output/data.csv"
 
 
 def load_input():
-    url_file_path = Path(URL_FILE)
-    url_file_read = url_file_path.read_text(encoding="utf-8").strip()
-    url_list = url_file_read.splitlines()
+    url_list = []
+    with open(URL_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            cleaned_line = line.strip()
+            if cleaned_line:
+                url_list.append(cleaned_line)
 
-    keyword_file_read = Path(KEYWORD_FILE).read_text(encoding="utf-8").strip()
-    keyword_list = keyword_file_read.splitlines()
+    keyword_list = []
+    with open(KEYWORD_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            cleaned_line = line.strip()
+            if cleaned_line:
+                keyword_list.append(cleaned_line)
 
     return url_list, keyword_list
 
@@ -75,9 +79,12 @@ async def main():
     for url in url_list:
         result = await keytrace_processing(url, keyword_list)
         result_list.extend(result)
-        await asyncio.sleep(2)
 
-    print("Result:", result_list)
+    # print("Result:", result_list)
+
+    if result_list:
+        display_result(result_list)
+        save_to_csv(result_list, OUTPUT_FILE)
 
     return
 

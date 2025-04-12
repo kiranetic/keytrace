@@ -1,3 +1,8 @@
+import csv
+import os
+from tabulate import tabulate
+
+
 def prompt_builder(content, keyword_list):
     keywords = ", ".join(keyword_list)
 
@@ -34,8 +39,29 @@ Keywords: {keywords}
     return prompt.strip()
 
 
-def extract_json_block(json_response) -> str:
+def extract_json_block(json_response):
     if "```json" in json_response:
         return json_response.split("```json")[-1].split("```")[0].strip()
     return json_response.strip()
 
+
+def display_result(data_list):
+    table = tabulate(data_list, headers="keys", tablefmt="plain", showindex="always")
+    print(f"Extracted Result Table:\n{table}")
+    return
+
+
+def save_to_csv(data_list, file):
+    headers = ["url", "keyword", "content"]
+
+    output_dir = os.path.dirname(file)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    with open(file, mode="w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=headers)
+        writer.writeheader()
+        writer.writerows(data_list)
+        print(f"Table stored as CSV. Filename: {file}.")
+    
+    return
