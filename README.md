@@ -81,19 +81,23 @@ pip install -U -r requirements.txt
 
 ### 4. Configure environment variables
 Copy the sample and edit:
-
 ```bash
 cp .env.sample .env
 ```
 
 Edit `.env`:
-
 ```
-OPENAI_MODEL="gpt-4o-mini"  # or gpt-4,  gpt-3.5-turbo, etc.
-OPENAI_API_KEY="your-api-key"  # Add your OpenAI API Key
+OPENAI_MODEL="gpt-4o-mini"         # or gpt-4, gpt-3.5-turbo, etc.
+OPENAI_API_KEY="your-api-key"      # Add your OpenAI API key
 ```
 
-### 5. Prepare input files
+### 5. Run crawl4ai setup
+```bash
+crawl4ai-setup          # Post-installation setup
+crawl4ai-doctor         # Verify installation
+```
+
+### 6. Prepare input files
 
 Edit the following input files in the `input/` directory:
 
@@ -109,7 +113,7 @@ Edit the following input files in the `input/` directory:
     carbon
     ```
 
-### 6. Run the script
+### 7. Run the script
 
 ```bash
 python3 main.py
