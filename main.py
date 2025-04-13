@@ -85,6 +85,8 @@ async def main():
     if result_list:
         display_result(result_list)
         save_to_csv(result_list, OUTPUT_FILE)
+    else:
+        print("No matches found")
 
     return
 
