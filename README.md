@@ -75,9 +75,22 @@ source .venv/bin/activate
 ```
 
 ### 3. Install dependencies
+
+This project uses both `crawl4ai` for web scraping and `autogen` packages for agent workflows.  
+However, there's a known **dependency conflict on `pillow`**:
+
+- `autogen-core` requires: `pillow >= 11.0.0`
+- `crawl4ai` requires: `pillow ~= 10.4`  
+
+Since this project **does not use image processing features** from `crawl4ai`, it's safe to use the newer version of `pillow` required by `autogen`.
+
 ```bash
-pip install -U -r requirements.txt
+pip install -U crawl4ai
+pip install -U "autogen-agentchat" "autogen-ext[openai]"
+pip install -U tabulate
 ```
+
+> ⚠️ **Note**: During installation, you may see warnings about dependency conflicts. These do **not affect functionality** and can be **safely ignored**.
 
 ### 4. Configure environment variables
 Copy the sample and edit:
